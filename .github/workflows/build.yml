@@ -1,0 +1,40 @@
+
+name: Build Mixer Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - copilot/import-mixer-project
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract Android project
+        run: |
+          unzip mixer-1-0.1-github-actions-ready.zip
+          test -f mixer-1-0.1/gradlew
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build APK
+        working-directory: mixer-1-0.1
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mixer-debug-APK
+          path: mixer-1-0.1/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
