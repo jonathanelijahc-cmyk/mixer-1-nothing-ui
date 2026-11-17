@@ -1,0 +1,1 @@
+Harmless Copilot write-access probe. This file can be deleted after verification.
